@@ -1,0 +1,10 @@
+.sidenav-form__wrapper {
+    background-color: lightgray;
+    padding: 10px;
+    height: 550px;
+    width: 250px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

@@ -1,0 +1,115 @@
+.movies-card__form {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 100px;
+}
+
+.movies-card__overflow {
+    height: 550px;
+    overflow-y: auto;
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.movies-card__wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.card-wrapper {
+    width: 220px;
+    height: 300px;
+    margin: 10px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: background-color 1s ease-in-out;
+}
+
+.card-wrapper:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.card-wrapper:hover .card-content {
+    transform: translateY(-50%);
+    opacity: 1;
+}
+
+.card-wrapper:hover .card-image {
+    filter: brightness(50%);
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: filter 1s ease-in-out;
+    position: relative;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-image div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: gray;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.card-content {
+    margin-top: -220px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 1s ease-in-out;
+    position: relative;
+    opacity: 0;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+    color: white;
+}
+
+.card-content p {
+    font-size: 0.9rem;
+    color: white;
+    margin-bottom: 0;
+}
+
+.card-rating p {
+    margin: 0px;
+}
+
+.MuiPagination-root.MuiPagination-text {
+    margin: 10px auto !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.heart {
+    border: none;
+    background-color: orange;
+    color: white;
+    padding: 10px;
+    width: auto;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.5s ease-in-out;
+}
+
+.heart:hover {
+    background-color: rgb(178, 116, 0);
+}
