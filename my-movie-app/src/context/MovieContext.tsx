@@ -11,45 +11,78 @@ export const useMovies = () => {
 };
 
 export const MovieProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [favorites, setFavorites] = useState<number[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+    const [ratingRange, setRatingRange] = useState<number[]>([0, 10]);
+    const [releaseYearRange, setReleaseYearRange] = useState<number[]>([1990, new Date().getFullYear()]);
+    const [genres, setGenres] = useState([]);
 
-    const addFavorite = (movieId: number) => {
-        setFavorites([...favorites, movieId]);
+    const [favorites, setFavorites] = useState<IMovie[]>([]);
+
+    const addFavorite = (movie: IMovie) => {
+        setFavorites((prevFavorites) => [...prevFavorites, movie]);
     };
 
     const removeFavorite = (movieId: number) => {
-        setFavorites(favorites.filter((id: number) => id !== movieId));
+        setFavorites((prevFavorites) => prevFavorites.filter((item: IMovie) => item.id !== movieId));
     };
 
     const isFavorite = (movieId: number) => {
-        return favorites.includes(movieId);
+        return favorites.some((item) => item.id === movieId);
     };
 
     const [movies, setMovies] = useState<IMovie[]>([]);
     const [totalPages, setTotalPages] = useState(0);
 
-    const fetchMovies = (page: number, filters: any) => {
-        const { genres = [], ratingRange = [], yearRange = [] } = filters;
-        const genreQuery = genres.map((genre: any) => `genres.name=${encodeURIComponent(genre)}`).join('&');
+    const fetchMovies = (page: number) => {
+        setLoading(true);
+        const genreQuery = selectedGenres.map((genre: any) => `genres.name=${encodeURIComponent(genre)}`).join('&');
         const ratingQuery = ratingRange.length > 0 ? `rating.imdb=${ratingRange[0]}-${ratingRange[1]}` : '';
-        const yearQuery = yearRange.length > 0 ? `year=${yearRange[0]}-${yearRange[1]}` : '';
+        const yearQuery = releaseYearRange.length > 0 ? `year=${releaseYearRange[0]}-${releaseYearRange[1]}` : '';
 
         const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=50${genreQuery ? '&' + genreQuery : ''}${ratingQuery ? '&' + ratingQuery : ''}${
             yearQuery ? '&' + yearQuery : ''
-        }&token=4JCS9TP-RA04RFP-NNK1MZG-8MFP1B0`;
-        axios.get<IResponse, IResponse>(url).then((response) => {
-            console.log('ответ', response);
-            setMovies(response.data.docs);
-            setTotalPages(response.data.pages);
-        });
+        }&token=2ABZFFE-73C4T7X-HHMNPTD-DGB65X7`;
+        axios
+            .get<IResponse, IResponse>(url)
+            .then((response) => {
+                console.log('ответ', response);
+                setMovies(response.data.docs);
+                setTotalPages(response.data.pages);
+            })
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => {
-        fetchMovies(1, {});
+        fetch('https://api.kinopoisk.dev/v1/movie/possible-values-by-field?field=genres.name&token=2ABZFFE-73C4T7X-HHMNPTD-DGB65X7')
+            .then((response) => response.json())
+            .then((data) => {
+                const genresFromAPI = data.map((genre: any) => genre.name);
+                setGenres(genresFromAPI);
+            })
+            .catch((error) => console.error('Error fetching genres:', error));
     }, []);
 
     return (
-        <MovieContext.Provider value={{ movies, totalPages, fetchMovies, favorites, addFavorite, removeFavorite, isFavorite }}>
+        <MovieContext.Provider
+            value={{
+                movies,
+                totalPages,
+                fetchMovies,
+                favorites,
+                addFavorite,
+                removeFavorite,
+                isFavorite,
+                setSelectedGenres,
+                setReleaseYearRange,
+                setRatingRange,
+                selectedGenres,
+                ratingRange,
+                releaseYearRange,
+                loading,
+                genres,
+            }}
+        >
             {children}
         </MovieContext.Provider>
     );

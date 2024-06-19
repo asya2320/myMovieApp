@@ -97,9 +97,17 @@ export interface ReleaseYear {
 export interface MovieContextType {
     movies: IMovie[];
     totalPages: number;
-    fetchMovies: (page: number, filters: any) => void;
-    favorites: number[];
+    fetchMovies: (page: number) => void;
+    favorites: IMovie[];
     addFavorite: (movieId: any) => void;
     removeFavorite: (movieId: any) => void;
     isFavorite: (movieId: any) => boolean;
+    setSelectedGenres: (genres: string[]) => void;
+    setReleaseYearRange: (releaseYears: number[]) => void;
+    setRatingRange: (rating: number[]) => void;
+    selectedGenres: string[];
+    ratingRange: number[];
+    releaseYearRange: number[];
+    loading: boolean;
+    genres: string[];
 }

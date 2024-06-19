@@ -1,25 +1,9 @@
 import './Form.css';
-import { useEffect, useState } from 'react';
 import { Select, MenuItem, FormControl, InputLabel, Button, Slider, Typography } from '@mui/material';
 import { useMovies } from '../../context/MovieContext';
 
 const From: React.FC = () => {
-    const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-    const [ratingRange, setRatingRange] = useState<number[]>([0, 10]);
-    const [releaseYearRange, setReleaseYearRange] = useState<number[]>([1990, new Date().getFullYear()]);
-    const [genres, setGenres] = useState([]);
-
-    useEffect(() => {
-        fetch('https://api.kinopoisk.dev/v1/movie/possible-values-by-field?field=genres.name&token=4JCS9TP-RA04RFP-NNK1MZG-8MFP1B0')
-            .then((response) => response.json())
-            .then((data) => {
-                const genresFromAPI = data.map((genre: any) => genre.name);
-                setGenres(genresFromAPI);
-            })
-            .catch((error) => console.error('Error fetching genres:', error));
-    }, []);
-
-    const { fetchMovies } = useMovies();
+    const { fetchMovies, setSelectedGenres, setRatingRange, setReleaseYearRange, selectedGenres, releaseYearRange, ratingRange, genres } = useMovies();
 
     const handleGenreChange = (event: { target: { value: any } }) => {
         setSelectedGenres(event.target.value);
@@ -35,12 +19,7 @@ const From: React.FC = () => {
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
-        const filters = {
-            genres: selectedGenres,
-            ratingRange,
-            yearRange: releaseYearRange,
-        };
-        fetchMovies(1, filters);
+        fetchMovies(1);
     };
 
     return (

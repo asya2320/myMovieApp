@@ -1,34 +1,45 @@
-import React from 'react';
-import { MovieProvider, useMovies } from '../../context/MovieContext';
+import React, { useEffect, useState } from 'react';
+import { useMovies } from '../../context/MovieContext';
 import './MoviesList.css';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { Link } from 'react-router-dom';
 import Form from '../Form/Form';
+import { IMovie } from '../../types';
+import { CircularProgress } from '@mui/material';
 
 const MoviesList: React.FC = () => {
-    const { movies, totalPages, fetchMovies, addFavorite, removeFavorite, isFavorite } = useMovies();
+    const { movies, totalPages, fetchMovies, addFavorite, removeFavorite, isFavorite, loading } = useMovies();
+    const [page, setPage] = useState<number>(1);
+
+    useEffect(() => {
+        fetchMovies(page);
+    }, [page]);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
-        fetchMovies(page, {});
+        setPage(page);
     };
 
-    const handleAddFavorite = (movieId: number) => {
-        if (isFavorite(movieId)) {
-            removeFavorite(movieId);
+    const handleAddFavorite = (movie: IMovie) => {
+        if (isFavorite(movie.id)) {
+            removeFavorite(movie.id);
         } else {
-            addFavorite(movieId);
+            addFavorite(movie);
         }
     };
 
     return (
-        <MovieProvider>
-            <div>
-                <div className="movies-card__form">
-                    <div className="movies-card__overflow">
+        <div>
+            <div className="movies-card__form">
+                <div className="movies-card__overflow">
+                    {loading ? (
+                        <div className="loading-overlay">
+                            <CircularProgress color="primary" />
+                        </div>
+                    ) : (
                         <div className="movies-card__wrapper">
                             {movies.map((movie: any) => (
-                                <Link to={`/movies/${movie.id}`} key={movie.id} style={{ textDecoration: 'none' }}>
+                                <Link to={`/movies/${movie.id}`} state={{ movie: movie }} key={movie.id} style={{ textDecoration: 'none' }}>
                                     <div className="card-wrapper">
                                         <div className="card-image">
                                             {movie.poster?.previewUrl && <img src={movie.poster.previewUrl} alt={movie.name || movie.alternativeName || ''} />}
@@ -53,7 +64,7 @@ const MoviesList: React.FC = () => {
                                                 className="heart"
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    handleAddFavorite(movie.id);
+                                                    handleAddFavorite(movie);
                                                 }}
                                             >
                                                 {isFavorite(movie.id) ? 'Убрать из избранного' : 'Добавить в избранное'}
@@ -62,16 +73,16 @@ const MoviesList: React.FC = () => {
                                     </div>
                                 </Link>
                             ))}
-                        </div>{' '}
-                    </div>
-                    <Form></Form>
+                        </div>
+                    )}
                 </div>
-
-                <Stack spacing={2}>
-                    <Pagination color="secondary" count={totalPages} onChange={handlePageChange} />
-                </Stack>
+                <Form></Form>
             </div>
-        </MovieProvider>
+
+            <Stack spacing={2}>
+                <Pagination color="secondary" page={page} count={totalPages} onChange={handlePageChange} />
+            </Stack>
+        </div>
     );
 };
 
