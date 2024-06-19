@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 import { Link } from 'react-router-dom';
 import Form from '../Form/Form';
 
-const MoviesList: React.FC<{ filters: any }> = () => {
+const MoviesList: React.FC = () => {
     const { movies, totalPages, fetchMovies, addFavorite, removeFavorite, isFavorite } = useMovies();
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {

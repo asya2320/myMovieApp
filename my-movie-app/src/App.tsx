@@ -17,7 +17,7 @@ function App() {
                     <ThemeProvider theme={theme}>
                         <Header />
                         <Routes>
-                            <Route path="/" element={<MoviesList filters={{}} />} />
+                            <Route path="/" element={<MoviesList />} />
                             <Route path="/movies/:id" element={<Movie />} />
                             <Route path="/favourites" element={<Favourite />} />
                         </Routes>
